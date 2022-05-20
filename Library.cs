@@ -76,28 +76,25 @@ namespace csharp_biblioteca
             sw.WriteLine(newString);
             sw.Close();    
         }
-        public bool RestoreUsers(string fileName)
+        public void RestoreUsers(string fileName)
         {
             
             StreamReader sr = new StreamReader(fileName);
             
             //Continue to read until you reach end of file
-                string line = sr.ReadLine();
+            string line = sr.ReadLine();
             while (line != null)
             {
-                string[] stringUsers = line.Split(';');
-                if(stringUsers.Length != 0)
+                    string[] stringUsers = line.Split(';');
+                if (stringUsers.Length != 0)
                 {
-                    Users newUser = new Users(stringUsers);              
+                    Users newUser = new Users(stringUsers);
                     line = sr.ReadLine();
                 }
-                
             }
             //close the file
             sr.Close();
             Console.ReadLine();
-
-            return true;
         }
     }
 }

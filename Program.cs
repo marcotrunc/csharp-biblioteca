@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using System;
+using System.IO;
 
 namespace csharp_biblioteca
 {
@@ -19,12 +20,74 @@ namespace csharp_biblioteca
     {
         static void Main(string[] args)
         {
-        
-            Library l = new Library("National");
-            if (File.Exists("db.txt"))
+            //Check if Environment Variable "Public" is there
+            string vPublicEnv = Environment.GetEnvironmentVariable("PUBLIC");
+            if(vPublicEnv != null)
+                Console.WriteLine("Valore: {0}", vPublicEnv);
+            //Standard Path in Local
+            string stPath = vPublicEnv + "/Biblioteca";
+            //Filesystem Path 
+            string filePath = stPath + "/biblioteca.txt";
+            //Check if the "Biblioteca" folder is there
+            if (!Directory.Exists(stPath))
             {
-                l.RestoreUsers("db.txt");
+                Console.WriteLine("Inserisci la path del file di configurazione, se sei sul Server premi INVIO");
+                string Path = Console.ReadLine();
+                if (Path == "")
+                {
+                    try
+                    {
+                        // Try to create the directory.
+                        Directory.CreateDirectory(stPath);
+                        Console.WriteLine("The directory was created successfully at {0}.", Directory.GetCreationTime(stPath));
+                        StreamWriter sw = new StreamWriter("library-info.txt");
+                        sw.WriteLine("Section : fileConfig");
+                        sw.WriteLine(filePath);
+                        sw.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("The process failed: {0}", ex.ToString());
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        // Try to create the directory.
+                        Directory.CreateDirectory(stPath);
+                        Console.WriteLine("The directory was created successfully at {0}.", Directory.GetCreationTime(stPath));
+                        StreamWriter sw = new StreamWriter("library-info.txt");
+                        sw.WriteLine("Section : fileConfig");
+                        sw.WriteLine(Path);
+                        sw.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("The process failed: {0}", ex.ToString());
+                    }
+                }
             }
+
+            Library l = new Library("National");
+
+        
+            if (File.Exists(filePath))
+            {
+                StreamReader sr = new StreamReader(filePath);
+                string line = sr.ReadLine();
+                string genString = "";
+                while (line != null)
+                {
+                    genString += line;
+                    line = sr.ReadLine();
+                }
+                sr.Close();
+                if(genString.Length > 0)
+                    l.RestoreUsers(filePath);
+            }
+
+            Console.WriteLine("Non sono entrato nel restore");
             Shelf shOne = new Shelf("sh001");
             Shelf shTwo = new Shelf("sh002");
             Shelf shThree = new Shelf("sh003");
@@ -54,8 +117,8 @@ namespace csharp_biblioteca
             l.ListUsers.AddUser(u1);
             l.ListUsers.AddUser(u2);
             //Save on FileSystem
-            l.SaveUsers("db.txt", u1);
-            l.SaveUsers("db.txt", u2);
+            l.SaveUsers(filePath, u1);
+            l.SaveUsers(filePath, u2);
 
             Loan Loan1 = new Loan("L0001", new DateTime(2022, 05, 20), new DateTime(2022, 08, 20),u1,b1);
             Loan Loan2 = new Loan("L002", new DateTime(2020, 08, 15), new DateTime(2020, 10, 15), u2, b3);
@@ -63,10 +126,7 @@ namespace csharp_biblioteca
             l.Loans.Add(Loan1);
             l.Loans.Add(Loan2);
 
-            /*Console.WriteLine("Cosa vuoi fare?");
-            Console.WriteLine("1: Stampare un Utente");
-            Console.WriteLine("2: Stampare un Libro");
-            Console.WriteLine("3: Stampare un DvD");*/
+           
 
             List<Documents> results = l.SearchByCode("ISBN1");
 
