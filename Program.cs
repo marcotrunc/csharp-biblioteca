@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 
+
 namespace csharp_biblioteca
 {
 /*  Si vuole progettare un sistema per la gestione di una biblioteca.
@@ -20,6 +21,7 @@ namespace csharp_biblioteca
     {
         static void Main(string[] args)
         {
+            //Fileconfig.ReadAllSettings();
             //Check if Environment Variable "Public" is there
             string vPublicEnv = Environment.GetEnvironmentVariable("PUBLIC");
             if(vPublicEnv != null)
@@ -71,13 +73,13 @@ namespace csharp_biblioteca
 
             Library l = new Library("National");
 
-        
+            Console.WriteLine("Sono qui");
             if (File.Exists(filePath))
             {
                 StreamReader sr = new StreamReader(filePath);
-                string line = sr.ReadLine();
+                string line;
                 string genString = "";
-                while (line != null)
+                while ((line = sr.ReadLine()) != null)
                 {
                     genString += line;
                     line = sr.ReadLine();
@@ -85,8 +87,8 @@ namespace csharp_biblioteca
                 sr.Close();
                 if(genString.Length > 0)
                     l.RestoreUsers(filePath);
+           
             }
-
             Console.WriteLine("Non sono entrato nel restore");
             Shelf shOne = new Shelf("sh001");
             Shelf shTwo = new Shelf("sh002");

@@ -78,15 +78,13 @@ namespace csharp_biblioteca
         }
         public void RestoreUsers(string fileName)
         {
-            
             StreamReader sr = new StreamReader(fileName);
-            
             //Continue to read until you reach end of file
             string line = sr.ReadLine();
             while (line != null)
             {
-                    string[] stringUsers = line.Split(';');
-                if (stringUsers.Length != 0)
+                string[] stringUsers = line.Split(';');
+                if (stringUsers.Length > 0)
                 {
                     Users newUser = new Users(stringUsers);
                     line = sr.ReadLine();
@@ -94,7 +92,6 @@ namespace csharp_biblioteca
             }
             //close the file
             sr.Close();
-            Console.ReadLine();
         }
     }
 }
